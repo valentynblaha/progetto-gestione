@@ -28,11 +28,14 @@ def get_comments(videoID):
 
     def append_from_response(response):
         for item in response['items']:
-            comments.append(comment_to_dict(item['snippet']['topLevelComment']['snippet']))
+            comment = {}
+            comment['topLevelComment'] = comment_to_dict(item['snippet']['topLevelComment']['snippet'])
             # Add replies to that comment as well
             if item.get('replies'):
+                comment['replies'] = []
                 for reply in item['replies']['comments']:
-                    comments.append(comment_to_dict(reply['snippet']))
+                    comment['replies'].append(comment_to_dict(reply['snippet']))
+            comments.append(comment)
 
     request = get_request(None)
     response = request.execute()
@@ -44,9 +47,34 @@ def get_comments(videoID):
     
     return comments
 
+# TODO: testing of the following function
+def get_videos(videoIDs: list[str]):
+    request = youtube.videos().list(
+        id          = ','.join(videoIDs),
+        part        = 'id,snippet,contentDetails,statistics',
+        maxResults  = 50
+    )
+    response = request.execute()
+    videos = []
+    for item in response['items']:
+        videos.append({
+            'id':           item['id'],
+            'title':        item['snippet']['title'],
+            'description':  item['snippet']['description'],
+            'duration':     item['contentDetails']['duration'],
+            'likes':        item['statistics']['likeCount'],
+            'dislikes':     item['statistics']['dislikeCount'],
+            'views':        item['statistics']['viewCount']
+        })
+    return videos
+
 # WARNING: executing this will reduce the available points for further uses of the API
-comments = get_comments('Yxg96Re2X7k')
-f = open('Yxg96Re2X7k.json', 'w')
+"""
+id = 'PsNr8CFtMkQ'
+comments = get_comments(id)
+f = open(f'{id}.json', 'w')
 f.write(json.dumps(comments))
 f.close()
 print(len(comments))
+"""
+
