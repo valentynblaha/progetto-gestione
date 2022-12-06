@@ -63,7 +63,6 @@ def get_videos(videoIDs: list[str]):
             'description':  item['snippet']['description'],
             'duration':     item['contentDetails']['duration'],
             'likes':        item['statistics']['likeCount'],
-            'dislikes':     item['statistics']['dislikeCount'],
             'views':        item['statistics']['viewCount']
         })
     return videos
@@ -77,4 +76,7 @@ f.write(json.dumps(comments))
 f.close()
 print(len(comments))
 """
-
+with open('someids.txt', 'r') as f:
+    ids = [line.strip() for line in f]
+    videos = get_videos(ids)
+    print(len(videos))
