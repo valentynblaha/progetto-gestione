@@ -6,7 +6,7 @@ Use the **get_comments(videoID)** function. It returns a list of comments (which
 
 ## Schema of a document
 Documents in the **data** directory are in the JSON format. This is their schema:
-> **_NOTE_**: The documents are encoded using UTF-8, however the actual characters in strings are backslash escaped. This does not affect the parsing of a document in Python
+> **_NOTE_**: The documents are encoded using UTF-8, however the actual characters in strings are backslash escaped (i.e. you won't be able to see emojis in the JSON files themselves). This does not affect the parsing of a document in Python
 ```json
 {
     "video": {
