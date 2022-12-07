@@ -1,9 +1,31 @@
 from googleapiclient.discovery import build
+import scrapetube
+import os
 import json
 
 api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
+channel_id = "UC8butISFwT-Wl7EV0hUK0BQ"
+dir_files = os.path.join(os.getcwd(), "files")
+youtube = build('youtube', 'v3', developerKey=api_key)
 
-youtube = build('youtube', 'v3', developerKey = api_key)
+def start_crawling():
+    video_ids = scrapetube.get_channel("UC8butISFwT-Wl7EV0hUK0BQ")
+    ids = []
+    for id in video_ids:
+        ids.append(str(id['videoId']))
+    #create_ids_file(ids)
+    return ids
+
+def create_ids_file(ids):
+    if not os.path.exists(dir_files):
+        os.mkdir(dir_files)
+        print(dir_files)
+    file_txt = os.path.join(dir_files, "links.txt")
+    print(file_txt)
+    file = open(file_txt, 'w')
+    for id in ids:
+        file.write(f"{id}\n")
+
 
 def comment_to_dict(comment_snippet):
     return {
@@ -12,8 +34,8 @@ def comment_to_dict(comment_snippet):
         'likes':    comment_snippet['likeCount']
     }
 
+
 def get_comments(videoID):
-    
     comments = []
 
     def get_request(page_token):
@@ -44,8 +66,9 @@ def get_comments(videoID):
         request = get_request(response['nextPageToken'])
         response = request.execute()
         append_from_response(response)
-    
+
     return comments
+
 
 # TODO: testing of the following function
 def get_videos(videoIDs: list[str]):
@@ -62,12 +85,27 @@ def get_videos(videoIDs: list[str]):
             'title':        item['snippet']['title'],
             'description':  item['snippet']['description'],
             'duration':     item['contentDetails']['duration'],
-            'likes':        item['statistics']['likeCount'],
+            'likes':        item['statistics'].get('likeCount') or 0,
             'views':        item['statistics']['viewCount']
         })
     return videos
 
+
 # WARNING: executing this will reduce the available points for further uses of the API
+
+
+
+
+id = '7f50sQYjNRA'
+comments = get_comments(id)
+videos1 = get_videos(['tujhGdn1EMI','7f50sQYjNRA'])
+print(len(comments))
+print(comments)
+#for video in videos1:
+ #   print(video)
+#start_crawling()
+
+
 """
 id = 'PsNr8CFtMkQ'
 comments = get_comments(id)
@@ -76,7 +114,24 @@ f.write(json.dumps(comments))
 f.close()
 print(len(comments))
 """
+
+"""
 with open('someids.txt', 'r') as f:
     ids = [line.strip() for line in f]
     videos = get_videos(ids)
     print(len(videos))
+"""
+
+def cache_videos(ids_file):
+    chunk_size = 50
+    videos = []
+    with open(ids_file, 'r') as f:
+        video_ids = [line.strip() for line in f]
+        n = 0
+        while ids := video_ids[n:n + chunk_size]:
+            videos += get_videos(ids)
+            n += chunk_size
+    print(len(videos)) # For debugging
+    with open('videos.json', 'w') as f:
+        f.write(json.dumps(videos))
+cache_videos('links.txt')
