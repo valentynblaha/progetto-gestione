@@ -5,6 +5,7 @@ import json
 
 api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
 channel_id = "UC8butISFwT-Wl7EV0hUK0BQ"
+dirname = os.path.dirname(__file__)
 dir_files = os.path.join(os.getcwd(), "files")
 youtube = build('youtube', 'v3', developerKey=api_key)
 
@@ -70,7 +71,6 @@ def get_comments(videoID):
     return comments
 
 
-# TODO: testing of the following function
 def get_videos(videoIDs: list[str]):
     request = youtube.videos().list(
         id          = ','.join(videoIDs),
@@ -92,20 +92,6 @@ def get_videos(videoIDs: list[str]):
 
 
 # WARNING: executing this will reduce the available points for further uses of the API
-
-
-
-
-id = '7f50sQYjNRA'
-comments = get_comments(id)
-videos1 = get_videos(['tujhGdn1EMI','7f50sQYjNRA'])
-print(len(comments))
-print(comments)
-#for video in videos1:
- #   print(video)
-#start_crawling()
-
-
 """
 id = 'PsNr8CFtMkQ'
 comments = get_comments(id)
@@ -134,4 +120,20 @@ def cache_videos(ids_file):
     print(len(videos)) # For debugging
     with open('videos.json', 'w') as f:
         f.write(json.dumps(videos))
-cache_videos('links.txt')
+#cache_videos('links.txt')
+
+def get_videos_comments():
+    path = os.path.join(dirname, 'data')
+    current_files = {f[:-5] for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))}
+
+    with open('videos.json') as f:
+        videos = json.loads(f.read())
+        for video in videos:
+            id = video['id']
+            if id not in current_files:
+                record = {'video': video}
+                record['comments'] = get_comments(video['id'])
+                with open(os.path.join(dirname, f'data/{id}.json'), 'w') as video_file:
+                    video_file.write(json.dumps(record))
+                    print(f'{id}.json written')
+get_videos_comments()
