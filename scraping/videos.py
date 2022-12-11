@@ -6,7 +6,7 @@ from . import youtube_api
 channel_id = "UC8butISFwT-Wl7EV0hUK0BQ"
 
 
-def start_crawling():
+def start_crawling(): #TODO: docs
     video_ids = scrapetube.get_channel(channel_id)
     ids = []
     for id in video_ids:
@@ -15,16 +15,24 @@ def start_crawling():
     return ids
 
 
-def create_ids_file(ids):
+def create_ids_file(ids): # TODO: docs
     file_txt = os.path.join(os.getcwd(), "links.txt")
     #print(file_txt)
     with open(file_txt, 'w') as f:
         f.write('\n'.join(ids))
 
 
-def scrape_videos(videoIDs: list[str]):
+def scrape_videos(video_ids: list[str]):
+    """Scrapes all the videos in videos_ids
+
+    Arguments:
+        video_ids -- A list of videos to scrape
+
+    Returns:
+        A list of scraped videos
+    """
     request = youtube_api.youtube.videos().list(
-        id          = ','.join(videoIDs),
+        id          = ','.join(video_ids),
         part        = 'id,snippet,contentDetails,statistics',
         maxResults  = 50
     )
@@ -42,7 +50,13 @@ def scrape_videos(videoIDs: list[str]):
     return videos
 
 
-def cache_videos(ids_filename):
+def cache_videos(ids_filename: str):
+    """Given a file containing a list of YouTube video's ids (one on each row), 
+    scrapes all the videos in that list and writes them to a file named videos.json.
+
+    Arguments:
+        ids_filename -- Filename of the file containing the ids
+    """
     chunk_size = 50
     videos = []
     with open(ids_filename, 'r') as f:

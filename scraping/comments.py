@@ -3,7 +3,6 @@ import os, json
 
 api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
 
-dirname = os.path.dirname(__file__)
 
 def comment_to_dict(comment_snippet):
     return {
@@ -13,13 +12,20 @@ def comment_to_dict(comment_snippet):
     }
 
 
-def scrape_comments(videoID):
+def scrape_comments(video_id: str):
+    """Scrape all the comments of the YouTube video with the given id
+
+    Arguments:
+        video_id -- id of the video
+    Returns:
+        A list of comments with each comment having its replies
+    """
     comments = []
 
-    def get_request(page_token):
+    def get_request(page_token: str):
         return youtube_api.youtube.commentThreads().list(
             part        = 'snippet,replies',
-            videoId     = videoID,
+            videoId     = video_id,
             order       = 'time', # Time retrieves data faster compared to relevance (default)
             maxResults  = 100,
             pageToken   = page_token,
@@ -48,9 +54,16 @@ def scrape_comments(videoID):
     return comments
 
 
-def scrape_videos_comments(videos_json): # TODO: make target dir argument
-    path = os.path.join(dirname, 'data')
-    current_files = {f[:-5] for f in os.listdir(path) if os.path.isfile(os.path.join(path, f))}
+def scrape_videos_comments(videos_json: str, target_dir: str):
+    """Scrape all the comments for each video in the video_json file.
+    Each video gets its own file named video_id.json (Replace video_id with video's id),
+    and put in target_dir.
+
+    Arguments:
+        videos_json -- JSON file with videos
+        target_dir -- Directory that will contain the comments
+    """
+    current_files = {f[:-5] for f in os.listdir(target_dir) if os.path.isfile(os.path.join(target_dir, f))}
 
     with open(videos_json) as f:
         videos = json.loads(f.read())
@@ -59,6 +72,6 @@ def scrape_videos_comments(videos_json): # TODO: make target dir argument
             if id not in current_files:
                 record = {'video': video}
                 record['comments'] = scrape_comments(video['id'])
-                with open(os.path.join(dirname, f'data/{id}.json'), 'w') as video_file:
+                with open(os.path.join(os.getcwd(), f'{target_dir}/{id}.json'), 'w') as video_file:
                     video_file.write(json.dumps(record))
                     print(f'{id}.json written')
