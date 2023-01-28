@@ -11,25 +11,23 @@ def start_crawling(): #TODO: docs
     ids = []
     for id in video_ids:
         ids.append(str(id['videoId']))
-    #create_ids_file(ids)
     return ids
 
 
 def create_ids_file(ids): # TODO: docs
     file_txt = os.path.join(os.getcwd(), "links.txt")
-    #print(file_txt)
     with open(file_txt, 'w') as f:
         f.write('\n'.join(ids))
 
 
 def scrape_videos(video_ids: list[str]):
-    """Scrapes all the videos in videos_ids
+    """Scrapes all the videos in videos_ids and returns them in a list.
 
     Arguments:
         video_ids -- A list of videos to scrape
 
     Returns:
-        A list of scraped videos
+        A list of scraped videos. Each video is a dictionary. Refer to README file for more info
     """
     request = youtube_api.youtube.videos().list(
         id          = ','.join(video_ids),
