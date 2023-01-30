@@ -1,4 +1,5 @@
 from . import youtube_api
+from pathlib import Path
 import os, json
 
 api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
@@ -63,6 +64,8 @@ def scrape_videos_comments(videos_json: str, target_dir: str):
         videos_json -- JSON file with videos
         target_dir -- Directory that will contain the comments
     """
+    Path(target_dir).mkdir(parents=True, exist_ok=True)
+        
     current_files = {f[:-5] for f in os.listdir(target_dir) if os.path.isfile(os.path.join(target_dir, f))}
 
     with open(videos_json) as f:

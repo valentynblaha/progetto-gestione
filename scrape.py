@@ -1,7 +1,5 @@
 from scraping import videos, comments
 
-# TODO: write all the scraping code
-
 #Video scraping
 channel_id = "UC8butISFwT-Wl7EV0hUK0BQ"
 
