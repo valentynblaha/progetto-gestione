@@ -46,12 +46,13 @@ def scrape_videos(video_ids: list[str]):
     return videos
 
 
-def cache_videos(ids_filename: str):
+def cache_videos(ids_filename: str, videos_filename: str):
     """Given a file containing a list of YouTube video's ids (one on each row), 
-    scrapes all the videos in that list and writes them to a file named videos.json.
+    scrapes all the videos in that list and writes them to a file named videos_filename.
 
     Arguments:
-        ids_filename -- Filename of the file containing the ids
+        ids_filename -- Name of the file containing the ids
+        videos_filename -- Name of the the file that will contain the scraped videos
     """
     chunk_size = 50
     videos = []
