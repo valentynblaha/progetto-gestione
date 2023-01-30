@@ -3,7 +3,7 @@ import os, json
 
 api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
 
-
+#TODO: make private to package (if possible)
 def comment_to_dict(comment_snippet):
     return {
         'author':   comment_snippet['authorDisplayName'],

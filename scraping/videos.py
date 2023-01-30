@@ -3,10 +3,8 @@ import os
 import json
 from . import youtube_api
 
-channel_id = "UC8butISFwT-Wl7EV0hUK0BQ"
 
-
-def start_crawling(): #TODO: docs
+def start_crawling(channel_id: str): #TODO: docs
     video_ids = scrapetube.get_channel(channel_id)
     ids = []
     for id in video_ids:
@@ -14,7 +12,7 @@ def start_crawling(): #TODO: docs
     return ids
 
 
-def create_ids_file(ids): # TODO: docs
+def create_ids_file(ids: list[str]): # TODO: docs
     file_txt = os.path.join(os.getcwd(), "links.txt")
     with open(file_txt, 'w') as f:
         f.write('\n'.join(ids))
