@@ -7,7 +7,7 @@ import os, os.path
 ix = open_dir("indexdir")
 
 searcher = ix.searcher()
-print(list(searcher.lexicon("content")))
+#print(list(searcher.lexicon("content")))
 parser = QueryParser("content", schema=ix.schema)
 my_query = parser.parse(u"likes:[10 TO] AND 'javascript'")
 
@@ -16,12 +16,13 @@ my_query = parser.parse(u"likes:[10 TO] AND 'javascript'")
 all_parents = query.Term("kind", "video")
 
 # Then, we need a query that matches the children we want to find
-wanted_kids = parser.parse(u"likes:[10 TO] AND 'javascript'")
+wanted_kids = parser.parse(u'i have to learn html')
 
 # Now we can make a query that will match documents where "name" is
 # "close", but the query will return the "parent" documents of the matching
 # children
 q = query.NestedParent(all_parents, wanted_kids)
+
 # results = Index, Calculator
 
 
