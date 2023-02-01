@@ -13,7 +13,7 @@ if not os.path.exists("indexdir"):
 ix = create_in("indexdir", schema)
 
 data_dir = os.path.join(os.getcwd(), 'data')
-max_files = 10
+max_files = 5
 i = 0
 
 # load model and tokenizer
@@ -28,7 +28,7 @@ with ix.writer() as w:
     for filename in os.listdir(os.path.join(os.getcwd(), 'data')):
         i += 1
         print(f'Indexing file ({i}/{max_files}): {filename}')
-        if (i > max_files):
+        if (i >= max_files):
             break
         with w.group():
             with open(os.path.join(data_dir, filename), 'r') as f:

@@ -17,7 +17,7 @@ my_query = parser.parse(u"likes:[10 TO] AND 'javascript'")
 all_parents = whoosh.query.Term("kind", "video")
 
 # Then, we need a query that matches the children we want to find
-wanted_kids = parser.parse(u'i have to learn html')
+wanted_kids = parser.parse(u'javascript AND positive:[0.1 TO]')
 
 # Now we can make a query that will match documents where "name" is
 # "close", but the query will return the "parent" documents of the matching
