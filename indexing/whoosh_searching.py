@@ -27,6 +27,7 @@ q = query.NestedParent(all_parents, wanted_kids)
 
 
 results = searcher.search(q)
+
 if len(results) == 0:
     print("Empty result!!")
 else:
