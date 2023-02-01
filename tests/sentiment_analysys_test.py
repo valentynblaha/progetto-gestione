@@ -25,10 +25,13 @@ with open(os.path.join(os.getcwd(), f'data/{video_id}.json'), 'r') as f:
         encoded_comment = tokenizer(text, return_tensors='pt')
         try:
             output = model(**encoded_comment)
+            scores = output[0][0].detach().numpy()
+            scores = softmax(scores)
         except:
-            pass
-        scores = output[0][0].detach().numpy()
-        scores = softmax(scores)
+            # Error fix
+            # scores = [0, 1, 0]
+            continue
+        
         print(f'Comment {i}')
         print(text)
         print('Scores: ', scores)
