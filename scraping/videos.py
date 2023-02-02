@@ -5,14 +5,14 @@ from . import youtube_api
 
 
 def start_crawling(channel_id: str): #TODO: docs
+    
     videos = scrapetube.get_channel(channel_id)
     ids = []
     print('')
     for video in videos:
-        print ("\033[A                             \033[A")
         id = str(video['videoId'])
         ids.append(id)
-        print('Scraping video: ', id)
+        print(f'\033[AScraping video: {id}\033[K')
     return ids
 
 

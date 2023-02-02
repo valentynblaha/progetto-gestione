@@ -5,6 +5,8 @@ from scipy.special import softmax
 import json
 import os
 
+#TODO: optimize schema and field boost
+#TODO: add stemming
 schema = Schema(id=TEXT(stored=True), kind=TEXT, title=TEXT, user=TEXT(stored=True),
                 likes=NUMERIC(int, stored=True), content=TEXT(phrase=True), positive=NUMERIC(float, stored=True),
                 neutral=NUMERIC(float, stored=True), negative=NUMERIC(float, stored=True))
@@ -21,8 +23,6 @@ roberta = "cardiffnlp/twitter-roberta-base-sentiment"
 
 model = AutoModelForSequenceClassification.from_pretrained(roberta)
 tokenizer = AutoTokenizer.from_pretrained(roberta)
-
-labels = ['Negative', 'Neutral', 'Positive']
 
 with ix.writer() as w:
     for filename in os.listdir(os.path.join(os.getcwd(), 'data')):

@@ -11,7 +11,7 @@ tokenizer = AutoTokenizer.from_pretrained(roberta)
 
 labels = ['Negative', 'Neutral', 'Positive']
 
-RED='\\033[0;31m'
+YELLOW='\\033[1;33m'
 NC='\\033[0m' # No Color
 
 with open(os.path.join(os.getcwd(), f'data/{video_id}.json'), 'r') as f:
@@ -32,6 +32,6 @@ with open(os.path.join(os.getcwd(), f'data/{video_id}.json'), 'r') as f:
             # scores = [0, 1, 0]
             continue
         
-        print(f'Comment {i}')
+        print(f'{YELLOW}Comment {i}{NC}')
         print(text)
         print('Scores: ', scores)

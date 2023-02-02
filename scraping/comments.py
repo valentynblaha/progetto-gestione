@@ -7,6 +7,7 @@ api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
 #TODO: make private to package (if possible)
 def comment_to_dict(comment_snippet):
     return {
+        #TODO: add id as well and consider datetimes
         'author':   comment_snippet['authorDisplayName'],
         'text':     comment_snippet['textDisplay'],
         'likes':    comment_snippet['likeCount']
