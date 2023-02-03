@@ -2,15 +2,15 @@ from . import youtube_api
 from pathlib import Path
 import os, json
 
-api_key = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
 
-#TODO: make private to package (if possible)
-def comment_to_dict(comment_snippet):
+def __comment_to_dict(comment):
+    comment_snippet = comment['snippet']
     return {
-        #TODO: add id as well and consider datetimes
-        'author':   comment_snippet['authorDisplayName'],
-        'text':     comment_snippet['textDisplay'],
-        'likes':    comment_snippet['likeCount']
+        'id':           comment['id'],
+        'publishedAt':  comment_snippet['publishedAt'],
+        'author':       comment_snippet['authorDisplayName'],
+        'text':         comment_snippet['textDisplay'],
+        'likes':        comment_snippet['likeCount']
     }
 
 
@@ -37,12 +37,12 @@ def scrape_comments(video_id: str):
     def append_from_response(response):
         for item in response['items']:
             comment = {}
-            comment['topLevelComment'] = comment_to_dict(item['snippet']['topLevelComment']['snippet'])
+            comment['topLevelComment'] = __comment_to_dict(item['snippet']['topLevelComment'])
             # Add replies to that comment as well
             if item.get('replies'):
                 comment['replies'] = []
                 for reply in item['replies']['comments']:
-                    comment['replies'].append(comment_to_dict(reply['snippet']))
+                    comment['replies'].append(__comment_to_dict(reply))
             comments.append(comment)
 
     request = get_request(None)
@@ -71,11 +71,13 @@ def scrape_videos_comments(videos_json: str, target_dir: str):
 
     with open(videos_json) as f:
         videos = json.loads(f.read())
+        i = 0
         for video in videos:
+            i += 1
             id = video['id']
             if id not in current_files:
                 record = {'video': video}
                 record['comments'] = scrape_comments(video['id'])
                 with open(os.path.join(os.getcwd(), f'{target_dir}/{id}.json'), 'w') as video_file:
                     video_file.write(json.dumps(record))
-                    print(f'{id}.json written')
+                    print(f'({i}/{len(videos)}) {id}.json written')

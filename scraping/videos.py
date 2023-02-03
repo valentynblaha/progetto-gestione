@@ -41,6 +41,7 @@ def scrape_videos(video_ids: list[str]):
     for item in response['items']:
         videos.append({
             'id':           item['id'],
+            'publishedAt':  item['snippet']['publishedAt'],
             'title':        item['snippet']['title'],
             'description':  item['snippet']['description'],
             'duration':     item['contentDetails']['duration'],

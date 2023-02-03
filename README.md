@@ -14,6 +14,7 @@ Documents in the **data** directory are in the JSON format. This is their schema
 {
     "video": {
         "id": "string",
+        "publishedAt": "string (ISO 8601 format)",
         "title": "string",
         "description": "string",
         "duration": "string (ISO 8601 format)",
@@ -33,6 +34,8 @@ Documents in the **data** directory are in the JSON format. This is their schema
 Here is the schema for a **Comment** element:
 ```json
 {
+    "id": "string",
+    "publishedAt": "string (ISO 8601 format)",
     "author": "string",
     "text": "string",
     "likes": "number"
