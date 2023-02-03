@@ -4,6 +4,7 @@ import json
 import os
 import dateutil.parser
 import sentiment_analysis
+import numpy
 
 schema = Schema(id=STORED,
                 kind=ID,
@@ -23,9 +24,11 @@ data_dir = os.path.join(os.getcwd(), 'data')
 max_files = 5
 i = 0
 
+sentiment_analyzer = sentiment_analysis.SentimentAnalizer()
+
 def add_comment(writer, comment):
     text = comment['text']
-    scores = sentiment_analysis.score_text(text)
+    scores = sentiment_analyzer.get_score(text)
     writer.add_document(id=comment['id'],
                     kind='comment',
                     publishedAt=dateutil.parser.isoparse(comment['publishedAt']),
@@ -40,17 +43,27 @@ def add_comment(writer, comment):
 def index_video(writer, path):
     with open(path, 'r') as f:
         video = json.loads(f.read())
+    L = 0
+    video_scores = numpy.zeros(3)
+    for comment in video['comments']:
+        scores = add_comment(w, comment['topLevelComment'])
+        weight = comment['topLevelComment']['likes'] + 1
+        video_scores += numpy.array(scores) * weight
+        L += weight
+        if replies := comment.get('replies'):
+            for reply in replies:
+                add_comment(w, reply)
+    video_scores /= L
     writer.add_document(kind='video',
                     id=video['video']['id'],
                     publishedAt=dateutil.parser.isoparse(video['video']['publishedAt']),
                     title=video['video']['title'],
                     likes=video['video']['likes'],
-                    content=video['video']['description'])
-    for comment in video['comments']:
-        add_comment(w, comment['topLevelComment'])
-        if replies := comment.get('replies'):
-            for reply in replies:
-                add_comment(w, reply)
+                    content=video['video']['description'],
+                    negative=video_scores[0],
+                    neutral=video_scores[1],
+                    positive=video_scores[2]
+                    )
 
 with ix.writer() as w:
     for filename in os.listdir(os.path.join(os.getcwd(), 'data')):
