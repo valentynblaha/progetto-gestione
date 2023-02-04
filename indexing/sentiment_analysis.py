@@ -5,16 +5,23 @@ import pickle
 import hashlib
 
 # load model and tokenizer
-roberta = "cardiffnlp/twitter-roberta-base-sentiment"
+__roberta = "cardiffnlp/twitter-roberta-base-sentiment"
 
-model = AutoModelForSequenceClassification.from_pretrained(roberta)
-tokenizer = AutoTokenizer.from_pretrained(roberta)
+__model = AutoModelForSequenceClassification.from_pretrained(__roberta)
+__tokenizer = AutoTokenizer.from_pretrained(__roberta)
+
+class Singleton(type):
+    _instances = {}    
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+            super()
+        return cls._instances[cls]
 
 
+class SentimentAnalizer(metaclass=Singleton):
 
-class SentimentAnalizer():
-
-    #TODO: use binary instead of json
     __cache_filename = 'cache/sentiment_analysis.cache'
     __cache_dict = {}
     __cache_file = None
@@ -32,9 +39,9 @@ class SentimentAnalizer():
     def score_text(self, text):
         if not self.__cache_file:
             self.__cache_file = open(self.__cache_filename, 'wb')
-        encoded_text = tokenizer(text, return_tensors='pt')
+        encoded_text = __tokenizer(text, return_tensors='pt')
         try:
-            output = model(**encoded_text)
+            output = __model(**encoded_text)
             scores = output[0][0].detach().numpy()
             scores = softmax(scores).tolist()
         except:

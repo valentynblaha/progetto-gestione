@@ -1,1 +1,1 @@
-__all__ = ['sentiment_analysis']
+__all__ = ['sentiment_analysis', 'whoosh_indexing', 'whoosh_searching']

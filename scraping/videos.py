@@ -68,5 +68,5 @@ def cache_videos(ids_filename: str, videos_filename: str):
             videos += scrape_videos(ids)
             n += chunk_size
     print(len(videos)) # For debugging
-    with open('videos.json', 'w') as f:
+    with open(videos_filename, 'w') as f:
         f.write(json.dumps(videos))

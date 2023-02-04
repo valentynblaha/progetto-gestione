@@ -5,34 +5,25 @@ import whoosh.query
 import whoosh.scoring
 import os, os.path
 
-ix = open_dir("indexdir")
 
-with ix.searcher(weighting=whoosh.scoring.TF_IDF()) as s:
-    #print(list(searcher.lexicon("content")))
-    parser = QueryParser("content", schema=ix.schema)
-    my_query = parser.parse(u"likes:[10 TO] AND 'javascript'")
+class VideoSearcher():
 
-    # First, we need a query that matches all the documents in the "parent"
-    # level we want of the hierarchy
-    all_parents = whoosh.query.Term("kind", "video")
-
-    # Then, we need a query that matches the children we want to find
-    wanted_kids = parser.parse(u'javascript')
-
-    # Now we can make a query that will match documents where "name" is
-    # "close", but the query will return the "parent" documents of the matching
-    # children
-    q = whoosh.query.NestedParent(all_parents, wanted_kids)
-
-    # results = Index, Calculator
+    def __init__(self, indexdir) -> None:
+        self.__ix = open_dir(indexdir)
+        self.__searcher = self.__ix.searcher(weighting=whoosh.scoring.TF_IDF())
 
 
-    results = s.search(q)
+    def parse_query(self, query_text):
+        parser = QueryParser("content", schema=self.__ix.schema)
+        all_parents = whoosh.query.Term("kind", "video")
 
-    if len(results) == 0:
-        print("Empty result!!")
-    else:
-        for x in results:
-            print(x)
+        # Then, we need a query that matches the children we want to find
+        wanted_kids = parser.parse(query_text)
+        return whoosh.query.NestedParent(all_parents, wanted_kids)
 
+    def search(self, query):
+        return self.__searcher.search(query)
 
+    def __del__(self):
+        if self.__searcher is not None:
+            self.__searcher.close()
