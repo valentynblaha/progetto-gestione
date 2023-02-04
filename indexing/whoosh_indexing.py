@@ -21,7 +21,7 @@ if not os.path.exists("indexdir"):
 ix = create_in("indexdir", schema)
 
 data_dir = os.path.join(os.getcwd(), 'data')
-max_files = 5
+max_files = 20
 i = 0
 
 sentiment_analyzer = sentiment_analysis.SentimentAnalizer()
@@ -41,6 +41,7 @@ def add_comment(writer, comment):
     return scores
 
 def index_video(writer, path):
+    
     with open(path, 'r') as f:
         video = json.loads(f.read())
     L = 0
