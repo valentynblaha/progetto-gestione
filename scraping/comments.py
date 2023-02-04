@@ -14,13 +14,13 @@ def __comment_to_dict(comment):
     }
 
 
-def scrape_comments(video_id: str):
+def scrape_comments(video_id: str) -> list:
     """Scrape all the comments of the YouTube video with the given id
 
-    Arguments:
-        video_id -- id of the video
+    Args:
+        video_id (str): id of the video
     Returns:
-        A list of comments with each comment having its replies
+        list: Comments with each comment having its replies
     """
     comments = []
 
@@ -61,9 +61,9 @@ def scrape_videos_comments(videos_json: str, target_dir: str):
     Each video gets its own file named video_id.json (Replace video_id with video's id),
     and put in target_dir.
 
-    Arguments:
-        videos_json -- JSON file with videos
-        target_dir -- Directory that will contain the comments
+    Args:
+        videos_json (str): JSON file with videos
+        target_dir (str): Directory that will contain the comments
     """
     Path(target_dir).mkdir(parents=True, exist_ok=True)
         
