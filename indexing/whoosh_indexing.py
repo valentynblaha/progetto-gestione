@@ -16,14 +16,16 @@ schema = Schema(id=STORED,
                 positive=NUMERIC(float, stored=True),
                 neutral=NUMERIC(float, stored=True),
                 negative=NUMERIC(float, stored=True))
-if not os.path.exists("indexdir"):
-    os.mkdir("indexdir")
-ix = create_in("indexdir", schema)
+indexdir = 'indexdir'
+if not os.path.exists(indexdir):
+    os.mkdir(indexdir)
+ix = create_in(indexdir, schema)
 
 data_dir = os.path.join(os.getcwd(), 'data')
 max_files = 20
 i = 0
 
+print("Initializing sentiment analysis engine...")
 sentiment_analyzer = sentiment_analysis.SentimentAnalizer()
 
 def add_comment(writer, comment):
@@ -69,9 +71,11 @@ def index_video(writer, path):
 with ix.writer() as w:
     for filename in os.listdir(os.path.join(os.getcwd(), 'data')):
         i += 1
-        print(f'Indexing file ({i}/{max_files}): {filename}')
+        filepath = os.path.join(data_dir, filename)
+        print(f'Indexing file ({i}/{max_files}): {filename} - {os.path.getsize(filepath)} bytes')
         # For debugging
         if (i >= max_files):
             break
         with w.group():
-            index_video(w, os.path.join(data_dir, filename))
+            index_video(w, filepath)
+    print("Writing the index...")
