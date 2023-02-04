@@ -4,7 +4,18 @@ import json
 from . import youtube_api
 
 
-def start_crawling(channel_id: str): #TODO: docs
+def start_crawling(channel_id: str):
+    """
+    when passed channel id of a youtube channel this funtion performs crawling to
+    extract all the ids of videos uploaded on the channel from their respected 
+    urls to perform crawling later
+
+    Args:
+        channel_id (str): string of channel id
+
+    Returns:
+        list : video ids
+    """
     
     videos = scrapetube.get_channel(channel_id)
     ids = []
@@ -12,24 +23,30 @@ def start_crawling(channel_id: str): #TODO: docs
     for video in videos:
         id = str(video['videoId'])
         ids.append(id)
-        print(f'\033[AScraping video: {id}\033[K')
+        print(f'\033[Acrawling video: {id}\033[K')
     return ids
 
 
-def create_ids_file(ids: list[str]): # TODO: docs
+def create_ids_file(ids: list[str]): 
+    """
+    transfer list of video ids on file 
+
+    Args:
+        ids (list[str]): video ids 
+    """
     file_txt = os.path.join(os.getcwd(), "links.txt")
     with open(file_txt, 'w') as f:
         f.write('\n'.join(ids))
 
 
 def scrape_videos(video_ids: list[str]):
-    """Scrapes all the videos in videos_ids and returns them in a list.
+    """Scrapes all the videos in videos_ids.
 
     Args:
-        video_ids (list[str]): A list of videos to scrape
+        video_ids (list[str]): A list of videos ids to scrape
 
     Returns:
-        _type_: _description_
+        list : scraped contents of videos of ids passed  
     """
     request = youtube_api.youtube.videos().list(
         id          = ','.join(video_ids),
