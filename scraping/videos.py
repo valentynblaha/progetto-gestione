@@ -25,11 +25,11 @@ def create_ids_file(ids: list[str]): # TODO: docs
 def scrape_videos(video_ids: list[str]):
     """Scrapes all the videos in videos_ids and returns them in a list.
 
-    Arguments:
-        video_ids -- A list of videos to scrape
+    Args:
+        video_ids (list[str]): A list of videos to scrape
 
     Returns:
-        A list of scraped videos. Each video is a dictionary. Refer to README file for more info
+        _type_: _description_
     """
     request = youtube_api.youtube.videos().list(
         id          = ','.join(video_ids),
@@ -55,9 +55,9 @@ def cache_videos(ids_filename: str, videos_filename: str):
     """Given a file containing a list of YouTube video's ids (one on each row), 
     scrapes all the videos in that list and writes them to a file named videos_filename.
 
-    Arguments:
-        ids_filename -- Name of the file containing the ids
-        videos_filename -- Name of the the file that will contain the scraped videos
+    Args:
+        ids_filename (str): Name of the file containing the ids
+        videos_filename (str): Name of the the file that will contain the scraped videos
     """
     chunk_size = 50
     videos = []

@@ -1,7 +1,7 @@
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from scipy.special import softmax
 import os
-import json
+import pickle
 import hashlib
 
 # load model and tokenizer
@@ -15,7 +15,7 @@ tokenizer = AutoTokenizer.from_pretrained(roberta)
 class SentimentAnalizer():
 
     #TODO: use binary instead of json
-    __cache_filename = 'cache/sentiment_analysis.json'
+    __cache_filename = 'cache/sentiment_analysis.cache'
     __cache_dict = {}
     __cache_file = None
 
@@ -23,15 +23,15 @@ class SentimentAnalizer():
         if not os.path.exists('cache'):
             os.mkdir('cache')
         if os.path.exists(self.__cache_filename):
-            with open(self.__cache_filename, 'r') as f:
+            with open(self.__cache_filename, 'rb') as f:
                 try:
-                    self.__cache_dict = json.loads(f.read())
+                    self.__cache_dict = pickle.loads(f.read())
                 except:
                     pass
 
     def score_text(self, text):
         if not self.__cache_file:
-            self.__cache_file = open(self.__cache_filename, 'w')
+            self.__cache_file = open(self.__cache_filename, 'wb')
         encoded_text = tokenizer(text, return_tensors='pt')
         try:
             output = model(**encoded_text)
@@ -54,5 +54,5 @@ class SentimentAnalizer():
     
     def __del__(self):
         if self.__cache_file is not None:
-            self.__cache_file.write(json.dumps(self.__cache_dict))
+            self.__cache_file.write(pickle.dumps(self.__cache_dict))
             self.__cache_file.close()
