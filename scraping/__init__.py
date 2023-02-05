@@ -1,1 +1,1 @@
-__all__ = ['comments', 'videos', 'youtube_api']
+__all__ = ['comments_scrape', 'video_scrape', 'youtube_api']
