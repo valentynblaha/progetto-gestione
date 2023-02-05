@@ -12,18 +12,15 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
     </head>
-    <body>
-        <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-        <h1>Judgy Search Engine</h1>
-        <div>
-            <input type="text" id="input-query">
-            <input type="button" id="button-search" value="Search">
+    <body class="d-flex justify-content-center align-items-center">
+        <div class="form-inline">
+          <input type="text" class="form-control form-control-lg mr-3" id="input-query" placeholder="Search" />
+          <button class="btn btn-primary btn-lg" id="button-search">Search</button>
         </div>
-        <div>
+        <div id="div-response">
 
         </div>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
-    </body>
+        <script src="static/js/script.js"></script>
+      </body>
 </html>
