@@ -31,23 +31,27 @@ function loadVideo(id) {
     });
 }
 
-async function showResults(results) {
+function getResultsTree(results) {
+
+    /**
+     * @type {Map<string, Array<string>}
+     */
     const videos = new Map();
-    const page = new Map();
+
     for (const result of results) {
         if (result['kind'] === 'video') {
-            const id = result['id']
-            const video = JSON.parse(await loadVideo(id))
-            videos.set(id, video);
-            page.set(id, {title: video['title'], comments: new Map()})
+            const id = result['id'];
+            videos.set(id, []);
         } else if (result['kind'] === 'comment') {
-            if (page.has(result['videoId'])) {
-                page.get(result['videoId']).comments.set(result['id'], result['id'])
+            const video_id = result['videoId'];
+            if (!videos.has(video_id)) {
+                videos.set(video_id, []);
             }
-            // TODO: if page doesn't have video id
+            videos.get(video_id).push(result['id']);
         }
     }
-    return page;
+
+    return videos;
 }
 
 searchButton.addEventListener("click", e => {
@@ -56,7 +60,9 @@ searchButton.addEventListener("click", e => {
     xhttp.onload = async function () {
         let results = JSON.parse(xhttp.responseText);
         console.log(results.length);
-        console.log(await showResults(results));
+        const resultsTree = getResultsTree(results);
+        console.log(resultsTree);
+        parseResults(resultsTree);
     };
 
     console.log(inputQuery.value);
@@ -70,3 +76,51 @@ inputQuery.addEventListener("keypress", function (event) {
         searchButton.click();
     }
 });
+
+
+/**
+ * @param {String} HTML representing a single element
+ * @return {Element}
+ */
+function htmlToElement(html) {
+    var template = document.createElement('template');
+    html = html.trim(); // Never return a text node of whitespace as the result
+    template.innerHTML = html;
+    return template.content.firstChild;
+}
+
+/**
+ * 
+ * @param {Map<string, string[]>} resultsTree 
+ * @param {Map<string, Object} videos
+ */
+async function parseResults(resultsTree) {
+    
+    function videoHtml(params) {
+        return `
+        <div>
+            <h4>${params.title}</h4>
+            <div>${params.description}</div>
+            <div>${params.likes}</div>
+        </div>
+        `
+    }
+
+    function commentHtml(params) {
+        return `
+        <div>
+            <h5>${params.author}</h5>
+            <div>${params.text}</div>
+            <div>${params.likes}</div>
+        </div>
+        `
+    }
+
+    for (const videoId of resultsTree.keys()) {
+        const commentsIds = resultsTree.get(videoId);
+        const video = JSON.parse(await loadVideo(videoId));
+
+        const foundComments = new Map();
+        divResponse.appendChild(htmlToElement(videoHtml(video.video)));
+    }
+}
