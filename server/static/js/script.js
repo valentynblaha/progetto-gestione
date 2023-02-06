@@ -32,12 +32,22 @@ function loadVideo(id) {
 }
 
 async function showResults(results) {
-    page = []
+    const videos = new Map();
+    const page = new Map();
     for (const result of results) {
         if (result['kind'] === 'video') {
-            page.push(await JSON.parse(loadVideo(result['id'])));
+            const id = result['id']
+            const video = JSON.parse(await loadVideo(id))
+            videos.set(id, video);
+            page.set(id, {title: video['title'], comments: new Map()})
+        } else if (result['kind'] === 'comment') {
+            if (page.has(result['videoId'])) {
+                page.get(result['videoId']).comments.set(result['id'], result['id'])
+            }
+            // TODO: if page doesn't have video id
         }
     }
+    return page;
 }
 
 searchButton.addEventListener("click", e => {
@@ -45,7 +55,8 @@ searchButton.addEventListener("click", e => {
 
     xhttp.onload = async function () {
         let results = JSON.parse(xhttp.responseText);
-        showResults(results)
+        console.log(results.length);
+        console.log(await showResults(results));
     };
 
     console.log(inputQuery.value);
