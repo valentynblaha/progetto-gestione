@@ -13,5 +13,5 @@ def index():
 def search():
     args = request.args
     query = args.get('q', '', type=str)
-    ids = [result.get('id') for result in searcher.search(searcher.parse_query(query))]
-    return jsonify(ids)
+    results = [result.fields() for result in searcher.search(searcher.parse_query(query))]
+    return jsonify(results)

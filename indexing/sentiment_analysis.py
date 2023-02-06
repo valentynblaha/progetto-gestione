@@ -39,8 +39,6 @@ class SentimentAnalizer(metaclass=Singleton):
                     pass
 
     def score_text(self, text):
-        if not self.__cache_file:
-            self.__cache_file = open(self.__cache_filename, 'wb')
         encoded_text = self.__tokenizer(text, return_tensors='pt')
         try:
             output = self.__model(**encoded_text)
@@ -51,6 +49,12 @@ class SentimentAnalizer(metaclass=Singleton):
             scores = [0,1,0]
         return scores
 
+    def write(self):
+        if self.__cache_file is None:
+            self.__cache_file = open(self.__cache_filename, 'wb')
+        print("Writing sentiment analysis cache...")
+        self.__cache_file.write(pickle.dumps(self.__cache_dict))
+        self.__cache_file.close()
 
     def get_score(self, text):
         hash = hashlib.md5(text.encode('utf-8')).hexdigest()
@@ -59,9 +63,3 @@ class SentimentAnalizer(metaclass=Singleton):
             score = self.score_text(text)
             self.__cache_dict[hash] = score
         return score
-
-    
-    def __del__(self):
-        if self.__cache_file is not None:
-            self.__cache_file.write(pickle.dumps(self.__cache_dict))
-            self.__cache_file.close()

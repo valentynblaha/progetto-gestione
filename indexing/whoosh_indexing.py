@@ -9,7 +9,8 @@ class VideoIndexer():
 
     __ix = None
     __schema = Schema(id=STORED,
-                kind=ID,
+                videoId=STORED,
+                kind=ID(stored=True),
                 publishedAt=DATETIME,
                 title=TEXT(field_boost=2, analyzer=analysis.StemmingAnalyzer()),
                 user=ID(stored=True),
@@ -28,10 +29,11 @@ class VideoIndexer():
         self.__sentiment_analyzer = sentiment_analyzer
 
     
-    def add_comment(self, writer, comment):
+    def add_comment(self, writer, comment, videoId):
         text = comment['text']
         scores = self.__sentiment_analyzer.get_score(text)
         writer.add_document(id=comment['id'],
+                        videoId=videoId,
                         kind='comment',
                         publishedAt=dateutil.parser.isoparse(comment['publishedAt']),
                         user=comment['author'],
@@ -48,17 +50,18 @@ class VideoIndexer():
             video = json.loads(f.read())
         L = 0
         video_scores = numpy.zeros(3)
+        video_id = video['video']['id']
         for comment in video['comments']:
-            scores = self.add_comment(writer, comment['topLevelComment'])
+            scores = self.add_comment(writer, comment['topLevelComment'], video_id)
             weight = comment['topLevelComment']['likes'] + 1
             video_scores += numpy.array(scores) * weight
             L += weight
             if replies := comment.get('replies'):
                 for reply in replies:
-                    self.add_comment(writer, reply)
+                    self.add_comment(writer, reply, video_id)
         video_scores /= L
         writer.add_document(kind='video',
-                        id=video['video']['id'],
+                        id=video_id,
                         publishedAt=dateutil.parser.isoparse(video['video']['publishedAt']),
                         title=video['video']['title'],
                         likes=video['video']['likes'],
@@ -71,7 +74,7 @@ class VideoIndexer():
     def write(self, data_dir):
         if self.__ix is not None:
             i = 0
-            max_files = 21
+            max_files = 25
             with self.__ix.writer() as w:
                 for filename in os.listdir(data_dir):
                     i += 1

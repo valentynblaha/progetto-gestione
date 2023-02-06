@@ -31,16 +31,21 @@ function loadVideo(id) {
     });
 }
 
+async function showResults(results) {
+    page = []
+    for (const result of results) {
+        if (result['kind'] === 'video') {
+            page.push(await JSON.parse(loadVideo(result['id'])));
+        }
+    }
+}
+
 searchButton.addEventListener("click", e => {
     const xhttp = new XMLHttpRequest();
 
     xhttp.onload = async function () {
-        let ids = JSON.parse(xhttp.responseText);
-        let responseText = "";
-        for (const id of ids) {
-            responseText += `<p>${parseVideoToHtml(await loadVideo(id))}</p>`;
-        }
-        divResponse.innerHTML = responseText;
+        let results = JSON.parse(xhttp.responseText);
+        showResults(results)
     };
 
     console.log(inputQuery.value);
