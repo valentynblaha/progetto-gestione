@@ -48,7 +48,7 @@ class VideosScraper:
             f.write('\n'.join(self.__video_ids))
 
 
-    def __scrape_videos(self,video_ids: list[str]):
+    def scrape_videos(self,video_ids: list[str]):
         """Scrapes all the videos in videos_ids.
 
         Args:
@@ -91,7 +91,7 @@ class VideosScraper:
             video_ids = [line.strip() for line in f]
             n = 0
             while ids := video_ids[n:n + chunk_size]:
-                videos += self.__scrape_videos(ids)
+                videos += self.scrape_videos(ids)
                 n += chunk_size
         print(len(videos)) # For debugging
         with open(videos_filename, 'w') as f:

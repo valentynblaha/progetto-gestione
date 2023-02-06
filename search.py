@@ -3,7 +3,8 @@ import json
 
 searcher = VideoSearcher('indexdir')
 
-results = searcher.search(searcher.parse_query('javascript AND positive:[0.5 TO]'))
+results = searcher.search(searcher.parse_query('title:java'))
 
+print(f'Found {results.scored_length()} results')
 for result in results:
-    print(result.get('id'))
+    print(result)

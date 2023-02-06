@@ -17,9 +17,8 @@ class VideoSearcher():
         parser = QueryParser("content", schema=self.__ix.schema)
         all_parents = whoosh.query.Term("kind", "video")
 
-        # Then, we need a query that matches the children we want to find
-        wanted_kids = parser.parse(query_text)
-        return whoosh.query.NestedParent(all_parents, wanted_kids)
+        query = parser.parse(query_text)
+        return query
 
     def search(self, query):
         return self.__searcher.search(query)

@@ -71,7 +71,7 @@ class VideoIndexer():
     def write(self, data_dir):
         if self.__ix is not None:
             i = 0
-            max_files = 20
+            max_files = 21
             with self.__ix.writer() as w:
                 for filename in os.listdir(data_dir):
                     i += 1
