@@ -22,16 +22,20 @@ class VideoIndexer():
 
     __sentiment_analyzer = None
 
-    def __init__(self, indexdir, sentiment_analyzer) -> None:
+    def __init__(self, indexdir, sentiment_analyzer=None) -> None:
         if not os.path.exists(indexdir):
             os.mkdir(indexdir)
         self.__ix = create_in(indexdir, self.__schema)
-        self.__sentiment_analyzer = sentiment_analyzer
+        if sentiment_analyzer is not None:
+            self.__sentiment_analyzer = sentiment_analyzer
 
     
     def add_comment(self, writer, comment, videoId):
         text = comment['text']
-        scores = self.__sentiment_analyzer.get_score(text)
+        if self.__sentiment_analyzer is not None:
+            scores = self.__sentiment_analyzer.get_score(text)
+        else:
+            scores = [0,0,0]
         writer.add_document(id=comment['id'],
                         videoId=videoId,
                         kind='comment',
@@ -74,15 +78,15 @@ class VideoIndexer():
     def write(self, data_dir):
         if self.__ix is not None:
             i = 0
-            max_files = 25
+            #max_files = 25
             with self.__ix.writer() as w:
                 for filename in os.listdir(data_dir):
                     i += 1
                     filepath = os.path.join(data_dir, filename)
-                    print(f'Indexing file ({i}/{max_files}): {filename} - {os.path.getsize(filepath)} bytes')
+                    print(f'Indexing file ({i}/1079): {filename} - {os.path.getsize(filepath)} bytes')
                     # For debugging
-                    if (i >= max_files):
-                        break
+                    #if (i >= max_files):
+                    #    break
                     with w.group():
                         self.index_video(w, filepath)
                 print("Writing the index...")

@@ -10,7 +10,7 @@ class VideoSearcher():
 
     def __init__(self, indexdir) -> None:
         self.__ix = open_dir(indexdir)
-        self.__searcher = self.__ix.searcher(weighting=whoosh.scoring.TF_IDF())
+        self.__searcher = self.__ix.searcher(weighting=whoosh.scoring.BM25F(B=0.75, K1=2))
 
 
     def parse_query(self, query_text):

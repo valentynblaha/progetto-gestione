@@ -2,6 +2,8 @@ const searchButton = document.getElementById("button-search");
 const inputQuery = document.getElementById("input-query");
 const divResponse = document.getElementById("div-response");
 
+inputQuery.value = localStorage.getItem("query");
+
 function parseVideoToHtml(video) {
     video_obj = JSON.parse(video);
     return video_obj["video"]["title"];
@@ -65,7 +67,7 @@ searchButton.addEventListener("click", e => {
         parseResults(resultsTree);
     };
 
-    console.log(inputQuery.value);
+    localStorage.setItem("query", inputQuery.value);
     xhttp.open("GET", `search?q=${inputQuery.value}`, true);
     xhttp.send();
 });
@@ -99,28 +101,33 @@ async function parseResults(resultsTree) {
     function videoHtml(params) {
         return `
         <div>
-            <h4>${params.title}</h4>
+            <h5>${params.title}</h5>
             <div>${params.description}</div>
-            <div>${params.likes}</div>
+            <div><img src="static/media/hand-thumbs-up-fill.svg"><span>${params.likes}</span></div>
         </div>
         `
     }
 
     function commentHtml(params) {
         return `
-        <div>
-            <h5>${params.author}</h5>
+        <div class="ms-5">
+            <h6>${params.author}</h6>
             <div>${params.text}</div>
-            <div>${params.likes}</div>
+            <div><img src="static/media/hand-thumbs-up-fill.svg"><span>${params.likes}</span></div>
         </div>
         `
     }
 
+    divResponse.innerHTML = "";
     for (const videoId of resultsTree.keys()) {
         const commentsIds = resultsTree.get(videoId);
         const video = JSON.parse(await loadVideo(videoId));
 
         const foundComments = new Map();
         divResponse.appendChild(htmlToElement(videoHtml(video.video)));
+        for (const commentId of commentsIds) {
+            const comment = video.comments.find(el => el['topLevelComment']['id'] === commentId);
+            divResponse.appendChild(htmlToElement(commentHtml(comment['topLevelComment'])));
+        }
     }
 }

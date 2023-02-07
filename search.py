@@ -3,8 +3,8 @@ import json
 
 searcher = VideoSearcher('indexdir')
 
-results = searcher.search(searcher.parse_query('javascript'))
+results = searcher.search(searcher.parse_query('html'))
 
 print(f'Found {results.scored_length()} results')
 for result in results:
-    print(result)
+    print(result, result.score)
