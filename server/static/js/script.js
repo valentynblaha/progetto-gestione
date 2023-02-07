@@ -34,27 +34,37 @@ function loadVideo(id) {
 }
 
 function getResultsTree(results) {
-
+    // TODO: refactoring. This sucks
     /**
-     * @type {Map<string, Array<string>}
+     * @type {Map<string, Map<string, string[]>>}
      */
     const videos = new Map();
 
     for (const result of results) {
         if (result['kind'] === 'video') {
             const id = result['id'];
-            videos.set(id, []);
+            videos.set(id, new Map());
         } else if (result['kind'] === 'comment') {
             const video_id = result['videoId'];
+            const topLevelId = commentReplyId(result['id']);
             if (!videos.has(video_id)) {
-                videos.set(video_id, []);
+                videos.set(video_id, new Map());
             }
-            videos.get(video_id).push(result['id']);
+            if (topLevelId) {
+                if (!videos.get(video_id).get(topLevelId)) {
+                    videos.get(video_id).set(topLevelId, []);
+                }
+                videos.get(video_id).get(topLevelId).push(result['id']);
+            } else {
+                videos.get(video_id).set(result['id'], [])
+            }
         }
     }
 
     return videos;
 }
+
+// TODO: solve last of the benchmark query issue
 
 searchButton.addEventListener("click", e => {
     const xhttp = new XMLHttpRequest();
@@ -79,6 +89,15 @@ inputQuery.addEventListener("keypress", function (event) {
     }
 });
 
+/**
+ * Returns the id of a topLevelComment given the id of the reply
+ * @param {string} id Id of the reply comment
+ * @returns Id of topLevelComment or empty string if id is already a topLevelComment
+ */
+function commentReplyId(id) {
+    return id.substring(0, id.indexOf('.'));
+}
+
 
 /**
  * @param {String} HTML representing a single element
@@ -93,7 +112,7 @@ function htmlToElement(html) {
 
 /**
  * 
- * @param {Map<string, string[]>} resultsTree 
+ * @param {Map<string, Map<string, string[]>>} resultsTree 
  * @param {Map<string, Object} videos
  */
 async function parseResults(resultsTree) {
@@ -120,14 +139,20 @@ async function parseResults(resultsTree) {
 
     divResponse.innerHTML = "";
     for (const videoId of resultsTree.keys()) {
-        const commentsIds = resultsTree.get(videoId);
+        const tlComments = resultsTree.get(videoId);
         const video = JSON.parse(await loadVideo(videoId));
 
-        const foundComments = new Map();
         divResponse.appendChild(htmlToElement(videoHtml(video.video)));
-        for (const commentId of commentsIds) {
-            const comment = video.comments.find(el => el['topLevelComment']['id'] === commentId);
-            divResponse.appendChild(htmlToElement(commentHtml(comment['topLevelComment'])));
+        for (const tlCommentId of tlComments.keys()) {
+            const tlComment = video.comments.find(el => el['topLevelComment']['id'] === tlCommentId);
+            divResponse.appendChild(htmlToElement(commentHtml(tlComment['topLevelComment'])));
+            const repliesIds = tlComments.get(tlCommentId);
+            if (repliesIds) {
+                for (const replyId of repliesIds) {
+                    const reply = tlComment['replies'].find(el => el['id'] === replyId);
+                    divResponse.appendChild(htmlToElement(commentHtml(reply)));
+                }
+            }
         }
     }
 }

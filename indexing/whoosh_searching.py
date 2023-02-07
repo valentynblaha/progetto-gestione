@@ -1,6 +1,6 @@
 from whoosh.index import open_dir
 from whoosh.fields import *
-from whoosh.qparser import QueryParser
+from whoosh.qparser import QueryParser, MultifieldParser, dateparse
 import whoosh.query
 import whoosh.scoring
 import os, os.path
@@ -14,14 +14,16 @@ class VideoSearcher():
 
 
     def parse_query(self, query_text):
-        parser = QueryParser("content", schema=self.__ix.schema)
-        all_parents = whoosh.query.Term("kind", "video")
+        #TODO: make parser a part of class
+        parser = MultifieldParser(["title","content"], schema=self.__ix.schema)
+
+        parser.add_plugin(dateparse.DateParserPlugin())
 
         query = parser.parse(query_text)
         return query
 
     def search(self, query):
-        return self.__searcher.search(query)
+        return self.__searcher.search(query, limit=40)
 
     def __del__(self):
         if self.__searcher is not None:
