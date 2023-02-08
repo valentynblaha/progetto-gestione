@@ -1,4 +1,5 @@
-from flask import Flask, redirect, url_for, request, render_template, session, jsonify
+"""Flask app for testing"""
+from flask import Flask, request, render_template, jsonify
 from indexing.whoosh_searching import VideoSearcher
 
 app = Flask(__name__, template_folder='server/templates', static_folder='server/static')

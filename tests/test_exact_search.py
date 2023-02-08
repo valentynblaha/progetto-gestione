@@ -1,12 +1,11 @@
 import unittest
-import os
 
 
 class ExactSearch(unittest.TestCase):
     
     def check_query(self, ids, query):
         for id in ids:
-            with open(os.path.join(os.getcwd(), f'data/{id}.json'), 'r') as f:
+            with open(f'data/{id}.json', 'r') as f:
                 text = f.read()
                 self.assertTrue(query in text.lower())
 

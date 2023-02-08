@@ -117,24 +117,41 @@ function htmlToElement(html) {
  */
 async function parseResults(resultsTree) {
     
+    function likesHtml(params) {
+        return `
+            <div class="px-3 py-2 d-inline-flex rounded-pill c-light-gray">
+                <img src="static/media/hand-thumbs-up-fill.svg" class="me-1">
+                <span>${params.likes}</span>
+            </div>
+        `;
+    }
+
     function videoHtml(params) {
         return `
-        <div>
-            <h5>${params.title}</h5>
+        <div class="mt-4">
+            <h5><b>${params.title}</b></h5>
             <div>${params.description}</div>
-            <div><img src="static/media/hand-thumbs-up-fill.svg"><span>${params.likes}</span></div>
+            <div>${likesHtml(params)}</div>
         </div>
-        `
+        `;
     }
 
     function commentHtml(params) {
         return `
         <div class="ms-5">
-            <h6>${params.author}</h6>
+            <h6><b>${params.author}</b></h6>
             <div>${params.text}</div>
-            <div><img src="static/media/hand-thumbs-up-fill.svg"><span>${params.likes}</span></div>
+            <div>
+                ${likesHtml(params)}
+            </div>
         </div>
-        `
+        `;
+    }
+
+    function replyHtml(params) {
+        return `
+        <div class="ms-5">${commentHtml(params)}</div>
+        `;
     }
 
     divResponse.innerHTML = "";
@@ -150,7 +167,7 @@ async function parseResults(resultsTree) {
             if (repliesIds) {
                 for (const replyId of repliesIds) {
                     const reply = tlComment['replies'].find(el => el['id'] === replyId);
-                    divResponse.appendChild(htmlToElement(commentHtml(reply)));
+                    divResponse.appendChild(htmlToElement(replyHtml(reply)));
                 }
             }
         }
