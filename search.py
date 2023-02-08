@@ -1,5 +1,4 @@
 from indexing.whoosh_searching import VideoSearcher
-import json
 
 searcher = VideoSearcher('indexdir')
 
