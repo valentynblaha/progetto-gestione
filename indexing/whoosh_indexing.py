@@ -78,15 +78,15 @@ class VideoIndexer():
     def write(self, data_dir):
         if self.__ix is not None:
             i = 0
-            #max_files = 25
+            max_files = 330
             with self.__ix.writer() as w:
                 for filename in os.listdir(data_dir):
                     i += 1
                     filepath = os.path.join(data_dir, filename)
                     print(f'Indexing file ({i}/1079): {filename} - {os.path.getsize(filepath)} bytes')
                     # For debugging
-                    #if (i >= max_files):
-                    #    break
+                    if (i >= max_files):
+                       break
                     with w.group():
                         self.index_video(w, filepath)
                 print("Writing the index...")
