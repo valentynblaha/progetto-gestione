@@ -1,6 +1,6 @@
 """Flask app for testing"""
 from flask import Flask, request, render_template, jsonify
-from indexing.whoosh_searching import VideoSearcher
+from ysa.indexing import VideoSearcher
 
 app = Flask(__name__, template_folder='server/templates', static_folder='server/static')
 searcher = VideoSearcher('indexdir')

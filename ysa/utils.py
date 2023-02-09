@@ -19,3 +19,9 @@ def print_yellow(*args, **kwargs):
     YELLOW='\033[1;33m'
     NC='\033[0m' # No Color
     print(YELLOW, *args, NC, **kwargs)
+
+
+def print_red(*args, **kwargs):
+    RED='\033[1;31m'
+    NC='\033[0m' # No Color
+    print(RED, *args, NC, **kwargs)

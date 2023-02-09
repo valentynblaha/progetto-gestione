@@ -33,14 +33,24 @@ function loadVideo(id) {
     });
 }
 
+
 function getResultsTree(results) {
     // TODO: refactoring. This sucks
     /**
      * @type {Map<string, Map<string, string[]>>}
      */
     const videos = new Map();
+    /**
+     * @type {Map<string, Array<number>}
+     */
+    const sentiments = new Map();
+
+    function getSentiment(result) {
+        return [result['negative'], result['neutral'], result['positive']];
+    }
 
     for (const result of results) {
+        sentiments.set(result['id'], getSentiment(result))
         if (result['kind'] === 'video') {
             const id = result['id'];
             videos.set(id, new Map());
@@ -61,7 +71,7 @@ function getResultsTree(results) {
         }
     }
 
-    return videos;
+    return {tree: videos, sentiments: sentiments};
 }
 
 // TODO: solve last of the benchmark query issue
@@ -112,7 +122,8 @@ function htmlToElement(html) {
 
 /**
  * 
- * @param {Map<string, Map<string, string[]>>} resultsTree 
+ * @param {{tree: Map<string, Map<string, string[]>>, 
+ *  sentiments: Map<string, number[]>}} resultsTree 
  * @param {Map<string, Object} videos
  */
 async function parseResults(resultsTree) {
@@ -128,21 +139,21 @@ async function parseResults(resultsTree) {
 
     function videoHtml(params) {
         return `
-        <div class="mt-4">
+        <div class="mt-4 mb-1">
             <h5><b>${params.title}</b></h5>
             <div>${params.description}</div>
-            <div>${likesHtml(params)}</div>
+            <div>${likesHtml(params)}${params.sentiments}</div>
         </div>
         `;
     }
 
     function commentHtml(params) {
         return `
-        <div class="ms-5">
+        <div class="ms-5 mt-3">
             <h6><b>${params.author}</b></h6>
             <div>${params.text}</div>
             <div>
-                ${likesHtml(params)}
+                ${likesHtml(params)}${params.sentiments}
             </div>
         </div>
         `;
@@ -155,19 +166,25 @@ async function parseResults(resultsTree) {
     }
 
     divResponse.innerHTML = "";
-    for (const videoId of resultsTree.keys()) {
-        const tlComments = resultsTree.get(videoId);
+    for (const videoId of resultsTree.tree.keys()) {
+        const tlComments = resultsTree.tree.get(videoId);
         const video = JSON.parse(await loadVideo(videoId));
 
-        divResponse.appendChild(htmlToElement(videoHtml(video.video)));
+        divResponse.appendChild(htmlToElement(videoHtml(
+            {...video.video, sentiments: resultsTree.sentiments.get(videoId) || []}
+            )));
         for (const tlCommentId of tlComments.keys()) {
             const tlComment = video.comments.find(el => el['topLevelComment']['id'] === tlCommentId);
-            divResponse.appendChild(htmlToElement(commentHtml(tlComment['topLevelComment'])));
+            divResponse.appendChild(htmlToElement(commentHtml(
+                {...tlComment['topLevelComment'], sentiments: resultsTree.sentiments.get(tlCommentId) || []}
+                )));
             const repliesIds = tlComments.get(tlCommentId);
             if (repliesIds) {
                 for (const replyId of repliesIds) {
                     const reply = tlComment['replies'].find(el => el['id'] === replyId);
-                    divResponse.appendChild(htmlToElement(replyHtml(reply)));
+                    divResponse.appendChild(htmlToElement(replyHtml(
+                        {...reply, sentiments: resultsTree.sentiments.get(replyId) || []}
+                        )));
                 }
             }
         }
