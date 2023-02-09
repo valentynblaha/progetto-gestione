@@ -1,0 +1,10 @@
+all videos and comments containing javascript
+videos with java in their title
+all comments from user bob
+content that is related to either python or swift
+videos or comments having more than 5000 likes that contain bootstrap
+content contating css and either sass or scss
+comments containing 'docker' that have neutral sentiment
+positive rated videos of html
+mostly negative comments about rust
+all solidity videos published after 7th feb 2022
