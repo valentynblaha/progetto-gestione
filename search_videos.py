@@ -1,4 +1,4 @@
-from scraping.youtube_api import youtube
+from ysa.scraping.youtube_api import youtube
 
 request = youtube.search().list(
     part = 'snippet',
@@ -11,7 +11,7 @@ request = youtube.search().list(
 response = request.execute()
 
 qn = 8
-with open(f'queries_dcg/{qn}.txt', 'a') as f:
+with open(f'benchmarking/queries_dcg/{qn}.txt', 'a') as f:
     for item in response['items']:
         id = item['id']['videoId']
         f.write(f'{id}\n')

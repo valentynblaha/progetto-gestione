@@ -1,4 +1,4 @@
-from indexing.whoosh_searching import VideoSearcher
+from ysa.indexing import VideoSearcher
 
 searcher = VideoSearcher('indexdir')
 

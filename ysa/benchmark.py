@@ -1,6 +1,13 @@
+"""
+Module for benchmarking the index using Discounted Cumulative Gain
+"""
+__all__ = ['calc_ndcg', 'get_video_list']
+
 from sklearn.metrics import ndcg_score, dcg_score
+from .indexing import VideoSearcher
+from .utils import print_yellow
+
 import numpy as np
-from indexing.whoosh_searching import VideoSearcher
 
 def calc_ndcg(ref_list, q_list):
 
@@ -35,26 +42,3 @@ def get_video_list(query, searcher: VideoSearcher):
                 video_ids.append(video_id)
     #print(video_ids)
     return video_ids
-
-
-def print_yellow(*args, **kwargs):
-    YELLOW='\033[1;33m'
-    NC='\033[0m' # No Color
-    print(YELLOW, *args, NC, **kwargs)
-
-
-with open('queries.txt', 'r') as f:
-    searcher = VideoSearcher('indexdir')
-    queries = f.read().splitlines()
-    for i, query in enumerate(queries):
-        print_yellow('Result for query: ', query)
-        q_list = get_video_list(query, searcher)
-        try:
-            with open(f'queries_dcg/{i + 1}.txt', 'r') as qf:
-                ref_list = qf.read().splitlines()
-                print('Ref list: ', ref_list)
-            ndcg = calc_ndcg(ref_list, q_list)
-        except:
-            ndcg = 1
-        finally:
-            print(f'Query {i + 1} nDCG score: {ndcg}')
