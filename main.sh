@@ -1,6 +1,6 @@
 echo "Select on of the following actions to execute:"
-echo "  1) Scrape (WARNING: may take some time)"
-echo "  2) Index (WARNING: may take some time)"
+echo "  1) Scrape (WARNING: it may take some time)"
+echo "  2) Index (WARNING: it may take some time)"
 echo "  3) Benchmark"
 echo "  4) Search"
 echo "  5) Run Flask App (try the search engine on a server)"
