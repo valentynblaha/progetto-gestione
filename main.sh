@@ -12,26 +12,28 @@ read ans
 case $ans in
 
     '1')
-    echo 'Scrape'
+    python3 scrape.py
     ;;
 
     '2')
-    echo 'Index'
+    python3 index.py
     ;;
 
     '3')
-    echo 'Benchmark'
+    python3 execute_benchmark.py
     ;;
 
-    '3')
-    echo 'Seacrh'
+    '4')
+    echo 'Type your query:'
+    read query
+    python3 search.py "$query"
     ;;
 
-    '3')
-    echo 'Flask'
+    '5')
+    flask --app flask_app.py run
     ;;
 
     *)
-    exit
+    exit 0
     ;;
 esac
