@@ -33,7 +33,6 @@ function loadVideo(id) {
     });
 }
 
-
 function getResultsTree(results) {
     // TODO: refactoring. This sucks
     /**
@@ -46,17 +45,17 @@ function getResultsTree(results) {
     const sentiments = new Map();
 
     function getSentiment(result) {
-        return [result['negative'], result['neutral'], result['positive']];
+        return [result["negative"], result["neutral"], result["positive"]];
     }
 
     for (const result of results) {
-        sentiments.set(result['id'], getSentiment(result))
-        if (result['kind'] === 'video') {
-            const id = result['id'];
+        sentiments.set(result["id"], getSentiment(result));
+        if (result["kind"] === "video") {
+            const id = result["id"];
             videos.set(id, new Map());
-        } else if (result['kind'] === 'comment') {
-            const video_id = result['videoId'];
-            const topLevelId = commentReplyId(result['id']);
+        } else if (result["kind"] === "comment") {
+            const video_id = result["videoId"];
+            const topLevelId = commentReplyId(result["id"]);
             if (!videos.has(video_id)) {
                 videos.set(video_id, new Map());
             }
@@ -64,14 +63,14 @@ function getResultsTree(results) {
                 if (!videos.get(video_id).get(topLevelId)) {
                     videos.get(video_id).set(topLevelId, []);
                 }
-                videos.get(video_id).get(topLevelId).push(result['id']);
+                videos.get(video_id).get(topLevelId).push(result["id"]);
             } else {
-                videos.get(video_id).set(result['id'], [])
+                videos.get(video_id).set(result["id"], []);
             }
         }
     }
 
-    return {tree: videos, sentiments: sentiments};
+    return { tree: videos, sentiments: sentiments };
 }
 
 // TODO: solve last of the benchmark query issue
@@ -105,7 +104,7 @@ inputQuery.addEventListener("keypress", function (event) {
  * @returns Id of topLevelComment or empty string if id is already a topLevelComment
  */
 function commentReplyId(id) {
-    return id.substring(0, id.indexOf('.'));
+    return id.substring(0, id.indexOf("."));
 }
 
 
@@ -114,16 +113,49 @@ function commentReplyId(id) {
  * @return {Element}
  */
 function htmlToElement(html) {
-    var template = document.createElement('template');
+    var template = document.createElement("template");
     html = html.trim(); // Never return a text node of whitespace as the result
     template.innerHTML = html;
     return template.content.firstChild;
 }
 
 /**
- * 
- * @param {{tree: Map<string, Map<string, string[]>>, 
- *  sentiments: Map<string, number[]>}} resultsTree 
+ * Handles the show more button click
+ * @param {PointerEvent} e 
+ */
+function showMoreClick(e) {
+    /**
+     * @type {HTMLElement}
+     */
+    const parent = e.target.closest(".text-container");
+    const dotsSpan = parent.getElementsByClassName("dots")[0];
+    const moreSpan = parent.getElementsByClassName("more")[0];
+    if (dotsSpan.classList.contains("d-none")) {
+        dotsSpan.classList.remove("d-none");
+        moreSpan.classList.add("d-none");
+        e.target.innerText = "Show more";
+    } else {
+        dotsSpan.classList.add("d-none");
+        moreSpan.classList.remove("d-none");
+        e.target.innerText = "Show less";
+    }
+}
+
+/**
+ * Sanitizes text for HTML insertion
+ * @param {string} text Text to sanitize
+ */
+function sanitizeText(text) {
+    const d = document.createElement("div");
+    d.innerText = text;
+    return d.innerHTML;
+}
+
+
+/**
+ *
+ * @param {{tree: Map<string, Map<string, string[]>>,
+ *  sentiments: Map<string, number[]>}} resultsTree
  * @param {Map<string, Object} videos
  */
 async function parseResults(resultsTree) {
@@ -131,13 +163,15 @@ async function parseResults(resultsTree) {
 
     function showMoreLessHtml(text) {
         if (text.length > TEXT_MAX_LENGTH) {
-            return text.slice(0, TEXT_MAX_LENGTH) + 
-                `<span class="dots">...</span><span class="more">` +
-                text.slice(TEXT_MAX_LENGTH, text.length) +
-                `</span>`;
+            return (
+                sanitizeText(text.slice(0, TEXT_MAX_LENGTH)) +
+                `<span class="dots">...</span><span class="more d-none">` +
+                sanitizeText(text.slice(TEXT_MAX_LENGTH, text.length)) +
+                `</span>
+                <div><button class="button-show-more" onclick="showMoreClick(event)">Show more</button></div>`
+            );
         }
-        // TODO: show more show less button
-        return text;
+        return sanitizeText(text);
     }
 
     function sentimentsHtml(params) {
@@ -150,7 +184,7 @@ async function parseResults(resultsTree) {
                 </div>
             `;
         }
-        return '';
+        return "";
     }
 
     function likesHtml(params) {
@@ -165,8 +199,8 @@ async function parseResults(resultsTree) {
     function videoHtml(params) {
         return `
         <div class="mt-4 mb-1">
-            <h5><b>${params.title}</b></h5>
-            <div>${showMoreLessHtml(params.description)}</div>
+            <h5><b>${sanitizeText(params.title)}</b></h5>
+            <div class="text-container">${showMoreLessHtml(params.description)}</div>
             ${sentimentsHtml(params)}
             <div>${likesHtml(params)}</div>
         </div>
@@ -176,8 +210,8 @@ async function parseResults(resultsTree) {
     function commentHtml(params) {
         return `
         <div class="ms-5 mt-3">
-            <h6><b>${params.author}</b></h6>
-            <div>${params.text}</div>
+            <h6><b>${sanitizeText(params.author)}</b></h6>
+            <div class="text-container">${showMoreLessHtml(params.text)}</div>
             ${sentimentsHtml(params)}
             <div>${likesHtml(params)}</div>
         </div>
@@ -195,21 +229,30 @@ async function parseResults(resultsTree) {
         const tlComments = resultsTree.tree.get(videoId);
         const video = JSON.parse(await loadVideo(videoId));
 
-        divResponse.appendChild(htmlToElement(videoHtml(
-            {...video.video, sentiments: resultsTree.sentiments.get(videoId) || []}
-            )));
+        divResponse.appendChild(
+            htmlToElement(
+                videoHtml({ ...video.video, sentiments: resultsTree.sentiments.get(videoId) || [] })
+            )
+        );
         for (const tlCommentId of tlComments.keys()) {
-            const tlComment = video.comments.find(el => el['topLevelComment']['id'] === tlCommentId);
-            divResponse.appendChild(htmlToElement(commentHtml(
-                {...tlComment['topLevelComment'], sentiments: resultsTree.sentiments.get(tlCommentId) || []}
-                )));
+            const tlComment = video.comments.find(el => el["topLevelComment"]["id"] === tlCommentId);
+            divResponse.appendChild(
+                htmlToElement(
+                    commentHtml({
+                        ...tlComment["topLevelComment"],
+                        sentiments: resultsTree.sentiments.get(tlCommentId) || [],
+                    })
+                )
+            );
             const repliesIds = tlComments.get(tlCommentId);
             if (repliesIds) {
                 for (const replyId of repliesIds) {
-                    const reply = tlComment['replies'].find(el => el['id'] === replyId);
-                    divResponse.appendChild(htmlToElement(replyHtml(
-                        {...reply, sentiments: resultsTree.sentiments.get(replyId) || []}
-                        )));
+                    const reply = tlComment["replies"].find(el => el["id"] === replyId);
+                    divResponse.appendChild(
+                        htmlToElement(
+                            replyHtml({ ...reply, sentiments: resultsTree.sentiments.get(replyId) || [] })
+                        )
+                    );
                 }
             }
         }

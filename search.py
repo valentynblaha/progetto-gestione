@@ -1,3 +1,5 @@
+#!/home/vale/dev/python/progetto-gestione/python_venv/bin/python3
+
 from ysa.indexing import VideoSearcher
 
 searcher = VideoSearcher('indexdir')

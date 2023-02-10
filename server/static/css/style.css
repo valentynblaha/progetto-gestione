@@ -14,3 +14,15 @@
 .neutral-bar {
     background-color: #fede00;
 }
+
+.button-show-more {
+    border: none;
+    background: none;
+    font-weight: bold;
+    color: #5e5e5e;
+}
+
+.button-show-more:hover {
+    color: #444444;
+    text-decoration: underline;
+}
