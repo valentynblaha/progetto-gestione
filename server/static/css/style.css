@@ -1,3 +1,16 @@
 .c-light-gray {
     background: lightgray;
 }
+
+.sentiment-bar {
+    height: 3px;
+    background-color: #81b622;
+}
+
+.negative-bar {
+    background-color: #ff033e;
+}
+
+.neutral-bar {
+    background-color: #fede00;
+}

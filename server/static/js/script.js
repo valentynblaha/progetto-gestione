@@ -127,7 +127,32 @@ function htmlToElement(html) {
  * @param {Map<string, Object} videos
  */
 async function parseResults(resultsTree) {
-    
+    const TEXT_MAX_LENGTH = 500;
+
+    function showMoreLessHtml(text) {
+        if (text.length > TEXT_MAX_LENGTH) {
+            return text.slice(0, TEXT_MAX_LENGTH) + 
+                `<span class="dots">...</span><span class="more">` +
+                text.slice(TEXT_MAX_LENGTH, text.length) +
+                `</span>`;
+        }
+        // TODO: show more show less button
+        return text;
+    }
+
+    function sentimentsHtml(params) {
+        if (Array.isArray(params.sentiments) && params.sentiments.length > 0) {
+            let [negative, neutral] = params.sentiments;
+            return `
+                <div class="mb-1 d-flex sentiment-bar">
+                    <div class="h-100 negative-bar" style="width: ${negative * 100}%"></div>
+                    <div class="h-100 neutral-bar" style="width: ${neutral * 100}%"></div>
+                </div>
+            `;
+        }
+        return '';
+    }
+
     function likesHtml(params) {
         return `
             <div class="px-3 py-2 d-inline-flex rounded-pill c-light-gray">
@@ -141,8 +166,9 @@ async function parseResults(resultsTree) {
         return `
         <div class="mt-4 mb-1">
             <h5><b>${params.title}</b></h5>
-            <div>${params.description}</div>
-            <div>${likesHtml(params)}${params.sentiments}</div>
+            <div>${showMoreLessHtml(params.description)}</div>
+            ${sentimentsHtml(params)}
+            <div>${likesHtml(params)}</div>
         </div>
         `;
     }
@@ -152,9 +178,8 @@ async function parseResults(resultsTree) {
         <div class="ms-5 mt-3">
             <h6><b>${params.author}</b></h6>
             <div>${params.text}</div>
-            <div>
-                ${likesHtml(params)}${params.sentiments}
-            </div>
+            ${sentimentsHtml(params)}
+            <div>${likesHtml(params)}</div>
         </div>
         `;
     }
