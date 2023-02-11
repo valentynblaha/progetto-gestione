@@ -109,9 +109,9 @@ class VideosScraper:
 
 class CommentsScraper:
      
-    def __init__(self, tar , file):
-        self.__target_dir = tar
-        self.__videos_file = file
+    def __init__(self, target_dir , videos_cache_file):
+        self.__target_dir = target_dir
+        self.__videos_file = videos_cache_file
 
 
     def __comment_to_dict(self,comment):

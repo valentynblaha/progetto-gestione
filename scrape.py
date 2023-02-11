@@ -8,5 +8,5 @@ videos_scrape.start_crawling()
 videos_scrape.cache_videos(videos_cache_file)
 
 #Comments scraping
-comments = CommentsScraper('data_new',videos_cache_file)
+comments = CommentsScraper('data',videos_cache_file)
 comments.scrape_videos_comments()
