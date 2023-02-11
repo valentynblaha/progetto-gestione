@@ -1,0 +1,7 @@
+pip3 install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
+pip3 install scrapetube
+
+pip3 install whoosh
+pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
+pip3 install scipy
+pip3 install python-dateutil
