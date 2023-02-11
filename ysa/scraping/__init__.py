@@ -1,3 +1,7 @@
+"""
+Package for scraping information from videos (i.e. title, description, publication date etc...)
+and their comments on YouTube
+"""
 __all__ = ['VideosScraper', 'CommentsScraper', 'youtube_api']
 
 from pathlib import Path
@@ -9,7 +13,8 @@ import json
 
 
 class VideosScraper:
-    
+    """Class containing methods for scraping all the videos from a YouTube channel
+    """
     def __init__(self, id ):
         self.__channel_id = id
         self.__video_ids = []
@@ -92,11 +97,11 @@ class VideosScraper:
         chunk_size = 50
         videos = []
         with open(self.__links_file, 'r') as f:
-            video_ids = [line.strip() for line in f]
-            n = 0
-            while ids := video_ids[n:n + chunk_size]:
-                videos += self.scrape_videos(ids)
-                n += chunk_size
+            video_ids = f.read().splitlines()
+        n = 0
+        while ids := video_ids[n:n + chunk_size]:
+            videos += self.scrape_videos(ids)
+            n += chunk_size
         print(len(videos)) # For debugging
         with open(videos_filename, 'w') as f:
             f.write(json.dumps(videos))
