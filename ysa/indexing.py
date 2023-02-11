@@ -96,11 +96,12 @@ class VideoIndexer():
             with self.__ix.writer() as w:
                 filelist = os.listdir(data_dir)
                 for i, filename in enumerate(filelist):
-                    filepath = os.path.join(data_dir, filename)
-                    print(f'Indexing file ({i}/{len(filelist)}): {filename} - {os.path.getsize(filepath)} bytes')
                     # For debugging
                     if (i >= max_files):
                        break
+                    filepath = os.path.join(data_dir, filename)
+                    print(f'Indexing file ({i + 1}/{len(filelist)}): {filename} - {os.path.getsize(filepath)} bytes')
+                    
                     with w.group():
                         self.index_video(w, filepath)
                 print("Writing the index...")
