@@ -1,3 +1,6 @@
+"""
+Module containing the YouTube API
+"""
 from googleapiclient.discovery import build
 
 
