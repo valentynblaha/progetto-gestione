@@ -171,10 +171,6 @@ class CommentsScraper:
         """Scrape all the comments for each video in the video_json file.
         Each video gets its own file named video_id.json (Replace video_id with video's id),
         and put in target_dir.
-
-        Args:
-            videos_json (str): JSON file with videos
-            target_dir (str): Directory that will contain the comments
         """
         Path(self.__target_dir).mkdir(parents=True, exist_ok=True)
 

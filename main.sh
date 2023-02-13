@@ -3,7 +3,7 @@ echo "  1) Scrape (WARNING: it may take some time)"
 echo "  2) Index (WARNING: it may take some time)"
 echo "  3) Benchmark"
 echo "  4) Search"
-echo "  5) Run Flask App (try the search engine on a server)"
+echo "  5) Run Flask App (try the search engine on a web server)"
 
 printf "Type one of the actions (1-5) or anything else to exit, then press Enter: "
 
