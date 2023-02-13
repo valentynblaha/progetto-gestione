@@ -84,11 +84,10 @@ class VideosScraper:
         return videos
 
     def cache_videos(self, videos_filename: str):
-        """Given a file containing a list of YouTube video's ids (one on each row), 
-        scrapes all the videos in that list and writes them to a file named videos_filename.
+        """ 
+        Scrapes all the videos in the crawled list and writes them to a file named videos_filename.
 
         Args:
-            ids_filename (str): Name of the file containing the ids
             videos_filename (str): Name of the the file that will contain the scraped videos
         """
         chunk_size = 50
