@@ -1,3 +1,4 @@
+"use strict";
 const searchButton = document.getElementById("button-search");
 const inputQuery = document.getElementById("input-query");
 const divResponse = document.getElementById("div-response");

@@ -23,7 +23,7 @@ __NC = '\033[0m'  # No Color
 def print_yellow(*args, **kwargs):
     """Like print but in yellow
     """
-    YELLOW = '\033[1;33m'
+    YELLOW = '\033[1;93m'
     print(YELLOW, *args, __NC, **kwargs)
 
 
