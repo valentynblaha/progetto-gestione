@@ -5,3 +5,4 @@ pip3 install whoosh
 pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
 pip3 install scipy
 pip3 install python-dateutil
+pip3 install flask

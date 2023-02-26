@@ -9,6 +9,7 @@ pip3 install whoosh
 pip3 install torch --extra-index-url https://download.pytorch.org/whl/cpu
 pip3 install scipy
 pip3 install python-dateutil
+pip3 install flask
 ```
 > ℹ️ **_NOTE_**: The PyTorch dependency above is suited for a Linux system with no CUDA cores available. It may change from one device to another. See the official website: https://pytorch.org/get-started/locally/
 
