@@ -13,7 +13,7 @@ function parseVideoToHtml(video) {
 function loadVideo(id) {
     return new Promise(function (resolve, reject) {
         let xhr = new XMLHttpRequest();
-        xhr.open("GET", `static/data/${id}.json`);
+        xhr.open("GET", `data/${id}.json`);
         xhr.onload = function () {
             if (this.status >= 200 && this.status < 300) {
                 resolve(xhr.responseText);
