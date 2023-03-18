@@ -3,6 +3,7 @@ Module containing the YouTube API
 """
 from googleapiclient.discovery import build
 
-
-API_KEY = 'AIzaSyD-u-cmOMhu0jxnOme5mizTWGQHzoM0X8c'
+raise Exception("Valid API Key needed")
+# replace the empty string in the following line with a valid YouTube Data API Key
+API_KEY = ''
 youtube = build('youtube', 'v3', developerKey=API_KEY)
