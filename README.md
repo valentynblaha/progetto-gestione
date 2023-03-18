@@ -15,7 +15,7 @@ pip3 install flask
 
 ## How to execute the application?
 
-> ℹ️ **_NOTE_**: The Python version used in the project is 3.9.2. Running the app with another version of Python might cause unexpected behavior.
+> ℹ️ **_NOTE_**: The Python version used in the project is 3.9. Running the app with another version of Python might cause unexpected behavior.
 
 ### On Linux or Mac
 Launch the ```./main.sh``` file in the root directory of the project. The file containts a list available options that execute different Python files. They are listed as following:
