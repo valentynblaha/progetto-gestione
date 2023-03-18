@@ -19,11 +19,11 @@ pip3 install flask
 
 ### On Linux or Mac
 Launch the ```./main.sh``` file in the root directory of the project. The file containts a list available options that execute different Python files. They are listed as following:
-1. Scrape - it scrapes all the data from the internet
-2. Index - indexes the scraped documents
-3. Benchmark - it runs all the benchmark queries which are in the **benchmarking/queries.txt** file and displays the results on the terminal
-4. Search - it allows the user to enter a query and get the relative results
-5. Run Flask App - runs a web server that allows the user to see the results on a GUI (website)
+1. Scrape - scrape all the data from the freeCodeCamp.org YouTube videos
+2. Index - index the scraped documents
+3. Benchmark - run all the benchmark queries which are in the **benchmarking/queries.txt** file and displays the results on the terminal
+4. Search - allows the user to enter a query and get the relative results
+5. Run Flask App - run a web server that allows the user to see the results on a GUI (website)
 
 ### On Windows
 You must run each file (located in the root directory) individually, using the Command Prompt.
