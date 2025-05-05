@@ -1,6 +1,6 @@
 # Progetto gestione dell'informazione
 
-## Dependencies for the correct execution
+## Dependencies for correct execution
 ```
 pip3 install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 pip3 install scrapetube
@@ -11,40 +11,41 @@ pip3 install scipy
 pip3 install python-dateutil
 pip3 install flask
 ```
-> ℹ️ **_NOTE_**: The PyTorch dependency above is suited for a Linux system with no CUDA cores available. It may change from one device to another. See the official website: https://pytorch.org/get-started/locally/
+> ℹ️ **_NOTE_**: The PyTorch dependency above is suited for a Linux system with no CUDA cores available. It may vary depending on your device. See the official website: https://pytorch.org/get-started/locally/
 
-## How to execute the application?
+## How to execute the application
 
-> ℹ️ **_NOTE_**: The Python version used in the project is 3.9. Running the app with another version of Python might cause unexpected behavior.
+> ℹ️ **_NOTE_**: The Python version used in this project is 3.9. Running the app with a different version of Python might cause unexpected behavior.
 
 ### On Linux or Mac
-Launch the ```./main.sh``` file in the root directory of the project. The file containts a list available options that execute different Python files. They are listed as following:
-1. Scrape - scrape all the data from the freeCodeCamp.org YouTube videos
-2. Index - index the scraped documents
-3. Benchmark - run all the benchmark queries which are in the **benchmarking/queries.txt** file and displays the results on the terminal
-4. Search - allows the user to enter a query and get the relative results
-5. Run Flask App - run a web server that allows the user to see the results on a GUI (website)
+Launch the `./main.sh` file in the root directory of the project. The file contains a list of available options that execute different Python files. They are listed as follows:
+1. **Scrape** – Scrapes all data from the freeCodeCamp.org YouTube videos.
+2. **Index** – Indexes the scraped documents.
+3. **Benchmark** – Runs all the benchmark queries found in the **benchmarking/queries.txt** file and displays the results in the terminal.
+4. **Search** – Allows the user to enter a query and get the corresponding results.
+5. **Run Flask App** – Runs a web server that allows the user to view the results through a GUI (website).
 
 ### On Windows
-You must run each file (located in the root directory) individually, using the Command Prompt.
+You must run each file (located in the root directory) individually using the Command Prompt.
 
 ## Benchmarking
 
-All the files needed for benchmarking can be found in the **benchmarking** directory of the project. It containes these items:
-- **queries.txt** - contains UINs written in the query language
-- **natural_language_queries.txt** - contains UINs written with natural language
-- **queries_dcg** - directory that contains a list relevant documents for each query
+All files needed for benchmarking can be found in the **benchmarking** directory of the project. It contains the following items:
+- **queries.txt** – Contains UINs written in the query language.
+- **natural_language_queries.txt** – Contains UINs written in natural language.
+- **queries_dcg** – A directory that contains lists of relevant documents for each query.
 
-The system is evaluated using the Discounted Cumulative Gain.
-To execute the benchmark choose option 3 of the **main.sh** file or run the **execute_benchmark.py** file manually.
-The results of the benchmark are shown on the terminal.
+The system is evaluated using the Discounted Cumulative Gain (DCG) metric.
 
-## Code documentation
-All the Python files are documented using Google Docstrings. For more information on that refer to this link: https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings
+To execute the benchmark, choose option 3 in the **main.sh** file or run the **execute_benchmark.py** file manually.  
+The benchmark results are displayed in the terminal.
 
-## Schema of a document
-Documents in the **data** directory are in the JSON format. This is their schema:
-> ℹ️ **_NOTE_**: The documents are encoded using UTF-8, however the actual characters in strings are backslash escaped (i.e. you won't be able to see emojis in the JSON files themselves). This does not affect the parsing of a document in Python
+## Code Documentation
+All Python files are documented using Google-style docstrings. For more information, refer to this link: https://github.com/google/styleguide/blob/gh-pages/pyguide.md#38-comments-and-docstrings
+
+## Document Schema
+Documents in the **data** directory are in JSON format. This is their schema:
+> ℹ️ **_NOTE_**: The documents are encoded using UTF-8. However, string characters are backslash-escaped (i.e., you won't be able to see emojis in the JSON files themselves). This does not affect the parsing of a document in Python.
 ```json
 {
     "video": {
